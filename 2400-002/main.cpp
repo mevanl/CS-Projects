@@ -3,6 +3,7 @@
 #include "string.h"
 
 int euclidGCD(int, int&, int, int&);
+int consecutiveIntegerCheckingGCD(int, int);
 
 int main(int argc, char *argv[]) {
 
@@ -38,9 +39,13 @@ int main(int argc, char *argv[]) {
     int nCoefficient = 1;
 
     gcd = euclidGCD(m, mCoefficient, n, nCoefficient);
-    std::cout << "Using the extended Euclid's Algorithm: \nGCD: " << gcd <<
-                 "\nCoefficient's multiplying to the GCD (mx,ny): " << "\nx: " << mCoefficient <<
-                 "\ny: " << nCoefficient << std::endl;
+    std::cout << "\nExtended Euclidean Algorithm " << "\n----------------------------" << "\nGCD: " << gcd <<
+                 "\n\nCoefficient's multiplying to get the GCD (mx,ny): " << "\nx = " << mCoefficient <<
+                 ", y = " << nCoefficient << std::endl;
+
+    gcd = consecutiveIntegerCheckingGCD(m, n);
+    std::cout << "\n\nConsecutive Integer Checking Algorithm" << "\n--------------------------------------" <<
+                 "\nGCD: " << gcd << std::endl;
 
     return 0;
 }
@@ -48,6 +53,7 @@ int main(int argc, char *argv[]) {
 /*
  *  euclidGCD is the extended implementation of Euclidean GCD algorithm.
  *  Parameters: int m and n, can be positive or negative integers.
+ *              variables to receive the coefficients that multiple to get the GCD.
  */
 int euclidGCD(int m, int& mCoefficient, int n, int& nCoefficient) {
 
@@ -80,4 +86,53 @@ int euclidGCD(int m, int& mCoefficient, int n, int& nCoefficient) {
     nCoefficient = mCoff1 - nCoff1 * (m / n);
 
     return gcd;
+}
+/*
+ * consecutiveIntegerCheckingGCD is GCD algorithm that uses smaller integer and decrements until finds dividable number
+ * Parameters: int m and n, can be positive or negative integers.
+ */
+int consecutiveIntegerCheckingGCD(int m, int n) {
+
+    // Can not divide 0 by 0, this is undefined.
+    if ((m == 0) && (n == 0)) {
+        std::cout << "Undefined, can not divide 0 by 0." << std::endl;
+        exit(1);
+    }
+
+    // In case one of the inputs if zero
+    if (m == 0) {
+        return n;
+    }
+    if (n == 0) {
+        return m;
+    }
+
+    // In case negative values
+    if (m < 0) {
+        m = (-1)*m;
+    }
+    if (n < 0) {
+        n = (-1)*n;
+    }
+
+    // Find smaller integer
+    int min;
+    if (m >= n) {
+        min = n;
+    }
+    else {
+        min = m;
+    }
+
+    // Loop until both have remainder of 0 when divided by minimum for both integers
+    while (true) {
+        if ((m % min) == 0) {
+            if ((n % min == 0)) {
+                break;
+            }
+        }
+        min--;
+    }
+
+    return min;
 }
