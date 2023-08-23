@@ -2,7 +2,7 @@
 #include <string>
 #include "string.h"
 
-int euclidGCD(int, int);
+int euclidGCD(int, int&, int, int&);
 
 int main(int argc, char *argv[]) {
 
@@ -33,19 +33,23 @@ int main(int argc, char *argv[]) {
 
     // Convert command line arguments to integers
     int m = std::stoi(argv[1]);
+    int mCoefficient = 1;
     int n = std::stoi(argv[2]);
+    int nCoefficient = 1;
 
-    gcd = euclidGCD(m, n);
-    std::cout << "GCD is: " << gcd << std::endl;
+    gcd = euclidGCD(m, mCoefficient, n, nCoefficient);
+    std::cout << "Using the extended Euclid's Algorithm: \nGCD: " << gcd <<
+                 "\nCoefficient's multiplying to the GCD (mx,ny): " << "\nx: " << mCoefficient <<
+                 "\ny: " << nCoefficient << std::endl;
 
     return 0;
 }
 
 /*
- *  euclidGCD is the extended implementation of euclid's GCD algorithm.
+ *  euclidGCD is the extended implementation of Euclidean GCD algorithm.
  *  Parameters: int m and n, can be positive or negative integers.
  */
-int euclidGCD(int m, int n) {
+int euclidGCD(int m, int& mCoefficient, int n, int& nCoefficient) {
 
     // Can not divide 0 by 0, this is undefined.
     if ((m == 0) && (n == 0)) {
@@ -53,19 +57,27 @@ int euclidGCD(int m, int n) {
         exit(1);
     }
 
-    // Changes negative to positive, it is same GCD as if it was positive.
-    if (m < 0) {
-        m = m * (-1);
-    }
-    if (n < 0) {
-        n = n * (-1);
-    }
-
     // Base case, GCD found.
     if (n == 0) {
+        mCoefficient = 1;
+        nCoefficient = 0;
+
+        if (m < 0) {
+            return (-1)*m;
+        }
         return m;
     }
     // Recursive case
-    int r = m % n;
-    return euclidGCD(n, r);
+
+    // To be updated with the new coefficients when going up recursive chain to find the coefficients that give us gcd
+    int mCoff1;
+    int nCoff1;
+
+    int gcd = euclidGCD(n, mCoff1, m % n, nCoff1);
+
+    // Update with new coefficients
+    mCoefficient = nCoff1;
+    nCoefficient = mCoff1 - nCoff1 * (m / n);
+
+    return gcd;
 }
