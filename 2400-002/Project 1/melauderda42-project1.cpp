@@ -3,7 +3,7 @@
  * Course: CSC 2400-002, Design of Algorithms
  * Date: 8/23/2023
  *
- * File: main.cpp
+ * File: melauderda42-project1.cpp
  * Project 1
  * Summary:
  *          Takes in two integers, type checked and negatives allowed, from the command line and runs puts them through
