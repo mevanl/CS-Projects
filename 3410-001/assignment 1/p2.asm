@@ -63,7 +63,7 @@ _start:
     imul ax, [secondDigit]
 
     add al, '0'
-    mov [answer], al ; could cause issues?
+    mov [answer], al 
 
     ; print solution
     mov eax, 4
