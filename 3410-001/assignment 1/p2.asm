@@ -33,6 +33,7 @@ _start:
     mov ecx, firstDigit                                          ; memory location to store string input
     mov edx, 5                                                   ; reserved max size of input
     int 80h                 
+    sub BYTE [firstDigit], '0'                                   ; String --> int
 
     ; Print + input for second digit
     mov eax, 4
@@ -47,23 +48,14 @@ _start:
     mov ecx, secondDigit
     mov edx, 5
     int 80h  
+    sub BYTE [secondDigit], '0'
 
-    ; converting from strings to decimal 
-    mov ah, [firstDigit]                                         ; move the value of the first digit into ah
-    sub ah, '0'                                                  ; convert from ascii to decimal 
-    mov al, [secondDigit]                                        ; same for second digit
-    sub al, '0'
+    mov ax, 0                                                     ; clear ax register
+    mov al, [firstDigit]                                          
+    imul BYTE [secondDigit]                                       ; integer multiplicaton on accumulator al
 
-    ; put decimal back into varialbe's address
-    mov [firstDigit], ah
-    mov [secondDigit], al
-
-    mov ax, 0
-    mov al, [firstDigit]
-    imul ax, [secondDigit]
-
-    add al, '0'
-    mov [answer], al 
+    add al, '0'                                                   ; int --> string
+    mov [answer], al                                              ; store in answer
 
     ; print solution
     mov eax, 4
