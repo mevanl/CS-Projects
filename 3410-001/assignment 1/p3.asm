@@ -2,15 +2,15 @@ BITS 32
 
 section .data                                                          ; Data Segment
     ; User Digits
-    firstDigitMsg DB "Enter a single digit number: ",                  ; Ask user for first digit
+    firstDigitMsg DB "Enter a single digit number: "            ; Ask user for first digit
     firstDigitMsgLen EQU $-firstDigitMsg                               ; first digit length
-    secondDigitMsg DB "Enter another single digit number: ",           ; ask user for second digit
+    secondDigitMsg DB "Enter another single digit number: "       ; ask user for second digit
     secondDigitMsgLen EQU $-secondDigitMsg                             ; second digit length
 
     ; Final addition value
-    displayQuotient DB "The answer is: "
+    displayQuotient DB "The quotient is: "
     displayQuotientLen EQU $-displayQuotient
-    displayRemainder DB "The answer is: "
+    displayRemainder DB 0ah, "The remainder is: "
     displayRemainderLen EQU $-displayRemainder
 
 section .bss
@@ -55,8 +55,7 @@ _start:
 
     ; convert string to decimal
     mov ax, 0
-    mov ax, [firstDigit]
-    ;mov bl, [secondDigit]
+    mov al, [firstDigit]
 
     ; divide
     idiv BYTE [secondDigit]
