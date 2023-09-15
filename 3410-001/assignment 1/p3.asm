@@ -1,11 +1,11 @@
 BITS 32
 
-section .data                                                          ; Data Segment
+section .data                                                     ; Data Segment
     ; User Digits
-    firstDigitMsg DB "Enter a single digit number: "            ; Ask user for first digit
-    firstDigitMsgLen EQU $-firstDigitMsg                               ; first digit length
+    firstDigitMsg DB "Enter a single digit number: "              ; Ask user for first digit
+    firstDigitMsgLen EQU $-firstDigitMsg                          ; first digit length
     secondDigitMsg DB "Enter another single digit number: "       ; ask user for second digit
-    secondDigitMsgLen EQU $-secondDigitMsg                             ; second digit length
+    secondDigitMsgLen EQU $-secondDigitMsg                        ; second digit length
 
     ; Final addition value
     displayQuotient DB "The quotient is: "
@@ -36,7 +36,7 @@ _start:
     mov ecx, firstDigit                                          ; memory location to store string input
     mov edx, 2                                                   ; reserved max size of input
     int 80h  
-    sub BYTE [firstDigit], '0'  
+    sub BYTE [firstDigit], '0'                                   ; String --> int
 
     ; Print + input for second digit
     mov eax, 4
@@ -53,7 +53,7 @@ _start:
     int 80h  
     sub BYTE [secondDigit], '0'  
 
-    ; convert string to decimal
+    ; mov firstDigit in accumulator
     mov ax, 0
     mov al, [firstDigit]
 
@@ -94,6 +94,7 @@ _start:
     mov edx, 1
     int 80h   
 
+    ; Exit 
     mov eax, 1
     mov ebx, 0
     int 80h
