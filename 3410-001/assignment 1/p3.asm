@@ -35,7 +35,8 @@ _start:
     mov ebx, 0                                                   ; STDIN
     mov ecx, firstDigit                                          ; memory location to store string input
     mov edx, 2                                                   ; reserved max size of input
-    int 80h    
+    int 80h  
+    sub BYTE [firstDigit], '0'  
 
     ; Print + input for second digit
     mov eax, 4
@@ -49,17 +50,16 @@ _start:
     mov ebx, 0
     mov ecx, secondDigit
     mov edx, 1
-    int 80h    
+    int 80h  
+    sub BYTE [secondDigit], '0'  
 
     ; convert string to decimal
     mov ax, 0
     mov ax, [firstDigit]
-    sub ax, '0'
-    mov bl, [secondDigit]
-    sub bl, '0'
+    ;mov bl, [secondDigit]
 
     ; divide
-    idiv bl
+    idiv BYTE [secondDigit]
 
     ; convert them to string
     add al, '0'
