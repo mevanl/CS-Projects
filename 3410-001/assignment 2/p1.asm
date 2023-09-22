@@ -1,6 +1,10 @@
 BITS 32
 
 section .data                                                     ; Data Segment
+    ; title
+    titleMsg DB "The Adding Program", 0xA
+    titleMsgLen EQU $-titleMsg
+
     ; User Digits
     firstDigitMsg DB "Enter a single digit number: "              ; Ask user for first digit
     firstDigitMsgLen EQU $-firstDigitMsg                          ; first digit length
@@ -20,6 +24,13 @@ section .text
     global _start
 
 _start:
+    ; title
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, titleMsg
+    mov edx, titleMsgLen
+    int 80h
+
     ; Print + input for first digit
     mov eax, 4                                                   ; sys_write
     mov ebx, 1                                                   ; STDOUT
@@ -62,6 +73,7 @@ _start:
 
     ; final answer
     mov [answer], ah                                             ; transfer into our answer memory location 
+    mov BYTE [answer+1], 10                                      ; add newline 
 
     ; print the answer 
     mov eax, 4

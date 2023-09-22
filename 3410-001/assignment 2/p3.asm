@@ -1,25 +1,40 @@
 BITS 32
 
-section .data
-    ; user digits 
+section .data                                                     ; Data Segment
+
+    ; title
+    titleMsg DB "Dividing Digits Program", 0xA
+    titleMsgLen EQU $-titleMsg
+
+    ; User Digits
     firstDigitMsg DB "Enter a single digit number: "              ; Ask user for first digit
     firstDigitMsgLen EQU $-firstDigitMsg                          ; first digit length
     secondDigitMsg DB "Enter another single digit number: "       ; ask user for second digit
     secondDigitMsgLen EQU $-secondDigitMsg                        ; second digit length
 
-    ; result 
-    displayMultiple DB "The answer is: "
-    displayMultipleLen EQU $-displayMultiple
+    ; Final addition value
+    displayQuotient DB "The quotient is: "
+    displayQuotientLen EQU $-displayQuotient
+    displayRemainder DB 0ah, "The remainder is: "
+    displayRemainderLen EQU $-displayRemainder
 
 section .bss
-    firstDigit RESB 5
-    secondDigit RESB 5
-    answer RESB 5
+    firstDigit RESB 2
+    secondDigit RESB 1
+    quotient RESB 1
+    remainder RESB 2
 
 section .text
     global _start
 
 _start:
+    ; print title
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, titleMsg
+    mov edx, titleMsgLen
+    int 80h
+
     ; Print + input for first digit
     mov eax, 4                                                   ; sys_write
     mov ebx, 1                                                   ; STDOUT
@@ -31,8 +46,8 @@ _start:
     mov eax, 3                                                   ; sys_read
     mov ebx, 0                                                   ; STDIN
     mov ecx, firstDigit                                          ; memory location to store string input
-    mov edx, 5                                                   ; reserved max size of input
-    int 80h                 
+    mov edx, 2                                                   ; reserved max size of input
+    int 80h  
     sub BYTE [firstDigit], '0'                                   ; String --> int
 
     ; Print + input for second digit
@@ -46,31 +61,53 @@ _start:
     mov eax, 3
     mov ebx, 0
     mov ecx, secondDigit
-    mov edx, 5
+    mov edx, 1
     int 80h  
-    sub BYTE [secondDigit], '0'
+    sub BYTE [secondDigit], '0'  
 
-    mov ax, 0                                                     ; clear ax register
-    mov al, [firstDigit]                                          
-    imul BYTE [secondDigit]                                       ; integer multiplicaton on accumulator al
+    ; mov firstDigit in accumulator
+    mov ax, 0
+    mov al, [firstDigit]
 
-    add al, '0'                                                   ; int --> string
-    mov [answer], al                                              ; store in answer
+    ; divide
+    idiv BYTE [secondDigit]
 
-    ; print solution
+    ; convert them to string
+    add al, '0'
+    add ah, '0'
+
+    ; store the quotient and remainder
+    mov [quotient], al
+    mov [remainder], ah
+    mov BYTE [remainder+1], 10
+
+    ; print quotient 
     mov eax, 4
     mov ebx, 1
-    mov ecx, displayMultiple
-    mov edx, displayMultipleLen
+    mov ecx, displayQuotient
+    mov edx, displayQuotientLen
     int 80h
 
     mov eax, 4
     mov ebx, 1
-    mov ecx, answer
-    mov edx, 5
+    mov ecx, quotient
+    mov edx, 1
     int 80h
 
-    ; quit
-    mov eax, 1                                                   ; sys exit
+    ; print remainder
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, displayRemainder
+    mov edx, displayRemainderLen
+    int 80h
+
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, remainder
+    mov edx, 2
+    int 80h   
+
+    ; Exit 
+    mov eax, 1
     mov ebx, 0
-    int 80h                                                      ; call kernel
+    int 80h
